@@ -36,12 +36,19 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
               <motion.div
                 key={tile || 'empty'}
                 layout
+                transition={{
+                  type: 'spring',
+                  stiffness: 400,
+                  damping: 35,
+                }}
+                whileHover={tile !== null ? { scale: 1.02, brightness: 1.1 } : {}}
+                whileTap={tile !== null ? { scale: 0.98 } : {}}
                 onClick={() => tile !== null && moveTile(idx)}
                 className={`
-                  rounded-lg sm:rounded-2xl flex items-center justify-center select-none transition-all duration-75 text-xl sm:text-3xl font-black aspect-square
+                  rounded-lg sm:rounded-2xl flex items-center justify-center select-none text-xl sm:text-3xl font-black aspect-square transition-colors
                   ${tile === null 
                     ? 'bg-neutral-900 border-2 border-dashed border-neutral-800' 
-                    : 'bg-blue-600 text-white cursor-pointer tile-shadow hover:brightness-110 active:tile-pressed border border-blue-400/20'
+                    : 'bg-blue-600 text-white cursor-pointer shadow-[0_4px_0_0_#1d4ed8] active:shadow-none border border-blue-400/20'
                   }
                 `}
               >
