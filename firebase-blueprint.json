@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user statistics, leveling data, and basic profile info.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "xp": { "type": "number", "description": "Total XP earned" },
+        "level": { "type": "number", "description": "Current player level" },
+        "totalGames": { "type": "number" },
+        "totalMoves": { "type": "number" },
+        "bestTime": { "type": "number", "description": "Overall best time in seconds" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "updatedAt"]
+    },
+    "Game": {
+      "title": "Game Record",
+      "description": "Historical record of a completed game session.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "mode": { "type": "string", "enum": ["classic", "modern", "brutalist"] },
+        "moves": { "type": "number" },
+        "seconds": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "mode", "moves", "seconds", "timestamp"]
+    },
+    "LeaderboardEntry": {
+      "title": "Leaderboard Slot",
+      "description": "Optimized record for global standings.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "moves": { "type": "number" },
+        "seconds": { "type": "number" },
+        "mode": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "moves", "seconds", "mode", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Individual user statistics and levels."
+    },
+    "/games/{userId}/history/{gameId}": {
+      "schema": "Game",
+      "description": "History of games played by the user."
+    },
+    "/leaderboard/{mode}/{userId}": {
+      "schema": "LeaderboardEntry",
+      "description": "Best performance per user per mode for global rankings."
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { Sidebar, TopBar } from './components/Navigation';
 import { PuzzleBoard, ControlPanel } from './components/PlayScreen';
 import { StatsScreen, LeaderboardScreen } from './components/StatsScreens';
 import { SettingsScreen } from './components/SettingsScreen';
+import { HistoryScreen } from './components/HistoryScreen';
 import { usePuzzle } from './hooks/usePuzzle';
 import { View } from './types';
 
@@ -40,6 +41,8 @@ export default function App() {
         return <StatsScreen />;
       case 'leaderboard':
         return <LeaderboardScreen />;
+      case 'history':
+        return <HistoryScreen />;
       case 'settings':
         return <SettingsScreen />;
       default:
@@ -52,6 +55,7 @@ export default function App() {
       case 'play': return 'Game Engine';
       case 'stats': return 'Performance Metrics';
       case 'leaderboard': return 'Global Standings';
+      case 'history': return 'Mission Logs';
       case 'settings': return 'System Configuration';
       default: return '';
     }

@@ -1,29 +1,42 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { User, Volume2, Music, Vibrate, Trash2, ChevronRight, Lock, Check } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export function SettingsScreen() {
+  const { logout, user, userStats } = useAuth();
   return (
     <div className="max-w-2xl mx-auto space-y-8 sm:space-y-12 pb-12 w-full px-2 sm:px-0">
       <section>
         <h2 className="text-[10px] sm:text-[10px] font-black text-neutral-500 uppercase tracking-[0.2em] mb-4">Core Identity</h2>
         <div className="bg-neutral-900 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 border border-neutral-800 shadow-2xl">
           <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-800 flex items-center justify-center border border-neutral-700 shadow-lg">
-              <User className="text-blue-500" size={24} />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-800 flex items-center justify-center border border-neutral-700 shadow-lg overflow-hidden">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <User className="text-blue-500" size={24} />
+              )}
             </div>
             <div>
-              <p className="text-xl sm:text-2xl font-black text-white italic tracking-tighter">Alex Rivers</p>
-              <p className="text-[10px] sm:text-sm font-bold text-blue-500 uppercase tracking-widest">Grandmaster • Lv. 42</p>
+              <p className="text-xl sm:text-2xl font-black text-white italic tracking-tighter">{user?.displayName || 'Anonymous Agent'}</p>
+              <p className="text-[10px] sm:text-sm font-bold text-blue-500 uppercase tracking-widest">
+                {user ? `Level ${userStats?.level || 1} • XP ${userStats?.xp || 0}` : 'GUEST SESSION'}
+              </p>
             </div>
           </div>
           <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
             <button className="bg-neutral-800 text-white border border-neutral-700 rounded-xl py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-widest active:translate-y-0.5 transition-all">
               Modify Protocol
             </button>
-            <button className="bg-neutral-800 text-red-500 border border-neutral-700 rounded-xl py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-widest active:translate-y-0.5 transition-all">
-              Terminate Session
-            </button>
+            {user && (
+              <button 
+                onClick={logout}
+                className="bg-neutral-800 text-red-500 border border-neutral-700 rounded-xl py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-widest active:translate-y-0.5 transition-all"
+              >
+                Terminate Session
+              </button>
+            )}
           </div>
         </div>
       </section>

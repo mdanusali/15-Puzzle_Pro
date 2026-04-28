@@ -28,9 +28,12 @@ import {
   MoreVertical,
   Plus,
   Grid3X3,
-  X
+  X,
+  LogIn,
+  Facebook
 } from 'lucide-react';
 import { View } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SidebarProps {
   currentView: View;
@@ -40,6 +43,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps) {
+  const { user, signInWithGoogle, signInWithFacebook, userStats } = useAuth();
   const menuItems = [
     { id: 'play', label: 'Play', icon: Grid2X2 },
     { id: 'stats', label: 'Statistics', icon: BarChart3 },
@@ -72,7 +76,7 @@ export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps
       <aside className={`bg-neutral-950 h-screen w-64 fixed left-0 top-0 border-r border-white/5 flex flex-col pt-8 z-[70] transition-transform duration-300 transform ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        <div className="px-6 mb-12 flex items-center justify-between">
+        <div className="px-6 mb-8 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white shrink-0">P</div>
@@ -83,6 +87,30 @@ export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps
           <button onClick={onToggle} className="lg:hidden text-zinc-500 hover:text-white transition-colors">
             <X size={20} />
           </button>
+        </div>
+
+        {/* User Profile Card */}
+        <div className="px-4 mb-8">
+          {user ? (
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 flex items-center gap-3 relative group overflow-hidden">
+               <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <img src={user.photoURL || ''} alt="" className="w-10 h-10 rounded-xl object-cover bg-neutral-800 relative z-10" />
+              <div className="overflow-hidden relative z-10">
+                <p className="text-white font-black text-xs truncate italic">{user.displayName}</p>
+                <p className="text-blue-500 font-black text-[9px] uppercase tracking-widest">Lv. {userStats?.level || 1} • {userStats?.xp || 0} XP</p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <button 
+                onClick={signInWithGoogle}
+                className="w-full bg-neutral-900 border border-neutral-800 hover:bg-neutral-800 text-white py-3 px-4 rounded-xl flex items-center gap-3 transition-colors group"
+              >
+                <LogIn size={16} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Login / Sync</span>
+              </button>
+            </div>
+          )}
         </div>
         
         <nav className="flex-1 space-y-1">
@@ -128,6 +156,7 @@ export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps
 }
 
 export function TopBar({ title, onToggleMenu }: { title: string, onToggleMenu: () => void }) {
+  const { user } = useAuth();
   return (
     <header className="bg-neutral-900/50 fixed top-0 right-0 left-0 lg:left-64 h-16 flex justify-between items-center px-4 lg:px-8 z-40 border-b border-white/5 backdrop-blur-md">
       <div className="flex items-center gap-4">
@@ -146,7 +175,11 @@ export function TopBar({ title, onToggleMenu }: { title: string, onToggleMenu: (
           <HelpCircle size={20} />
         </button>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-neutral-700 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-400 to-blue-700 shadow-lg shrink-0"></div>
+          {user ? (
+            <img src={user.photoURL || ''} alt="" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-neutral-700 bg-neutral-800 object-cover shrink-0" />
+          ) : (
+            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-neutral-700 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-400 to-blue-700 shadow-lg shrink-0"></div>
+          )}
         </div>
       </div>
     </header>

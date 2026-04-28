@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Users Collection ---
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId);
+      allow list: if false; // Users should not be listable
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUser(request.resource.data) && (
+        // Action: Update Stats
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['xp', 'level', 'totalGames', 'totalMoves', 'bestTime', 'updatedAt', 'photoURL', 'displayName']))
+      );
+
+      function isValidUser(data) {
+        return data.uid == request.auth.uid 
+          && data.updatedAt == request.time
+          && data.displayName is string && data.displayName.size() <= 100
+          && (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 500))
+          && data.xp is number && data.xp >= 0
+          && data.level is number && data.level >= 0
+          && data.totalGames is number && data.totalGames >= 0
+          && data.totalMoves is number && data.totalMoves >= 0
+          && data.bestTime is number && data.bestTime >= 0;
+      }
+    }
+
+    // --- Games History ---
+    match /games/{userId}/history/{gameId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidGame(request.resource.data);
+      allow update, delete: if false; // History is immutable
+
+      function isValidGame(data) {
+        return data.userId == request.auth.uid
+          && data.timestamp == request.time
+          && data.moves is number && data.moves >= 0
+          && data.seconds is number && data.seconds >= 0
+          && data.mode in ['classic', 'modern', 'brutalist'];
+      }
+    }
+
+    // --- Leaderboard ---
+    match /leaderboard/{mode}/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidLeaderboard(request.resource.data) && mode == request.resource.data.mode;
+      allow update: if isOwner(userId) && isValidLeaderboard(request.resource.data) && (
+        // Only allow update if the new result is actually better (or at least valid)
+        // In a real app we might check if request.resource.data.seconds < resource.data.seconds
+        isValidLeaderboardUpdate()
+      );
+      allow delete: if false;
+
+      function isValidLeaderboard(data) {
+        return data.userId == request.auth.uid
+          && data.timestamp == request.time
+          && data.displayName is string && data.displayName.size() <= 100
+          && data.moves is number && data.moves >= 0
+          && data.seconds is number && data.seconds >= 0
+          && data.mode is string;
+      }
+
+      function isValidLeaderboardUpdate() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['moves', 'seconds', 'timestamp', 'displayName', 'photoURL']);
+      }
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { GameMode, GameState } from '../types';
+import { db, auth } from '../lib/firebase';
+import { collection, addDoc, doc, updateDoc, increment, serverTimestamp, setDoc, getDoc } from 'firebase/firestore';
 
 const SNAKE_MAP = [0, 1, 2, 3, 7, 6, 5, 4, 8, 9, 10, 11, 15, 14, 13, 12];
 const SPIRAL_MAP = [0, 1, 2, 3, 7, 11, 15, 14, 13, 12, 8, 4, 5, 6, 10, 9];
@@ -47,24 +49,38 @@ export function usePuzzle() {
   }, [state.mode, getTargetState]);
 
   const shuffleGame = useCallback(() => {
-    initGame();
+    const target = getTargetState(state.mode);
     setState((s) => {
-      let newTiles = [...s.tiles];
+      let newTiles = [...target];
+      let lastMove: number | null = null;
+      
       for (let i = 0; i < 300; i++) {
         const empty = newTiles.indexOf(null);
         const row = Math.floor(empty / 4);
         const col = empty % 4;
         let neighbors = [];
-        if (row > 0) neighbors.push(empty - 4);
-        if (row < 3) neighbors.push(empty + 4);
-        if (col > 0) neighbors.push(empty - 1);
-        if (col < 3) neighbors.push(empty + 1);
+        
+        if (row > 0 && empty - 4 !== lastMove) neighbors.push(empty - 4);
+        if (row < 3 && empty + 4 !== lastMove) neighbors.push(empty + 4);
+        if (col > 0 && empty - 1 !== lastMove) neighbors.push(empty - 1);
+        if (col < 3 && empty + 1 !== lastMove) neighbors.push(empty + 1);
+        
         const next = neighbors[Math.floor(Math.random() * neighbors.length)];
         [newTiles[empty], newTiles[next]] = [newTiles[next], newTiles[empty]];
+        lastMove = empty; // Track last empty position to avoid immediate reverse moves
       }
-      return { ...s, tiles: newTiles, isStarted: true };
+      
+      return { 
+        ...s, 
+        tiles: newTiles, 
+        targetState: target,
+        moves: 0, 
+        seconds: 0, 
+        isStarted: true, 
+        isVictory: false 
+      };
     });
-  }, [initGame]);
+  }, [state.mode, getTargetState]);
 
   const moveTile = useCallback((idx: number) => {
     setState((s) => {
@@ -81,6 +97,11 @@ export function usePuzzle() {
         [newTiles[idx], newTiles[emptyIdx]] = [newTiles[emptyIdx], newTiles[idx]];
         
         const isVictory = newTiles.every((v, i) => v === s.targetState[i]);
+
+        if (isVictory && auth.currentUser) {
+          saveGameResult(s.moves + 1, s.seconds, s.mode);
+        }
+
         return {
           ...s,
           tiles: newTiles,
@@ -106,6 +127,52 @@ export function usePuzzle() {
     }
     return () => clearInterval(interval);
   }, [state.isStarted, state.isVictory]);
+
+  const saveGameResult = async (moves: number, seconds: number, mode: GameMode) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      // 1. Save to history
+      await addDoc(collection(db, 'games', user.uid, 'history'), {
+        userId: user.uid,
+        mode,
+        moves,
+        seconds,
+        timestamp: serverTimestamp()
+      });
+
+      // 2. Update user stats
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+      const currentBest = userDoc.data()?.bestTime || 999999;
+      
+      await updateDoc(userRef, {
+        totalGames: increment(1),
+        totalMoves: increment(moves),
+        xp: increment(Math.max(10, 100 - seconds)), // Simple XP logic
+        bestTime: Math.min(currentBest, seconds),
+        updatedAt: serverTimestamp()
+      });
+
+      // 3. Update leaderboard
+      const leaderboardRef = doc(db, 'leaderboard', mode, user.uid);
+      const currentLead = await getDoc(leaderboardRef);
+      if (!currentLead.exists() || seconds < currentLead.data().seconds) {
+        await setDoc(leaderboardRef, {
+          userId: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          moves,
+          seconds,
+          mode,
+          timestamp: serverTimestamp()
+        });
+      }
+    } catch (error) {
+      console.error("Error saving game result:", error);
+    }
+  };
 
   return { state, moveTile, shuffleGame, initGame };
 }
