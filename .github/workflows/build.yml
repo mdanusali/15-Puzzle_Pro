@@ -5,6 +5,13 @@ on:
     branches: [ "main" ] # Runs whenever you push to the main branch
   workflow_dispatch: # Allows you to run the build manually from the Actions tab
 
+# Required for peaceiris/actions-gh-pages to push to the repository
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
