@@ -36,7 +36,7 @@ export function usePuzzle() {
     const target = getTargetState(mode);
     setState((s) => ({
       ...s,
-      tiles: [...Array(15).keys()].map((i) => i + 1).concat(null),
+      tiles: [...target],
       targetState: target,
       moves: 0,
       seconds: 0,
