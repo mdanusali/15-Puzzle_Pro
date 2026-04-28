@@ -19,9 +19,5 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    server: {
-      middlewareMode: true,
-      hmr: process.env.DISABLE_HMR !== 'true',
-    },
   };
 });

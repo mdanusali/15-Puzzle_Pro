@@ -36,12 +36,11 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
               <motion.div
                 key={tile || 'empty'}
                 layout
-                layoutId={tile ? `tile-${tile}` : 'empty'}
                 transition={{
                   type: 'spring',
-                  stiffness: 300,
-                  damping: 30,
-                  mass: 0.8,
+                  stiffness: 450,
+                  damping: 40,
+                  mass: 1,
                 }}
                 whileHover={tile !== null ? { scale: 1.02, filter: 'brightness(1.1)' } : {}}
                 whileTap={tile !== null ? { scale: 0.98 } : {}}
