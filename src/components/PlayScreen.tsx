@@ -34,15 +34,20 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
           <div className="grid grid-cols-4 gap-2 sm:gap-3 aspect-square w-full">
             {state.tiles.map((tile, idx) => (
               <motion.div
-                key={tile || 'empty'}
+                key={tile === null ? 'empty' : `tile-${tile}`}
                 layout
+                layoutId={tile === null ? 'empty' : `tile-${tile}`}
                 transition={{
                   type: 'spring',
-                  stiffness: 450,
+                  stiffness: 500,
                   damping: 40,
                   mass: 1,
                 }}
-                whileHover={tile !== null ? { scale: 1.02, filter: 'brightness(1.1)' } : {}}
+                whileHover={tile !== null ? { 
+                  scale: 1.02, 
+                  filter: 'brightness(1.1)',
+                  transition: { duration: 0.2 }
+                } : {}}
                 whileTap={tile !== null ? { scale: 0.98 } : {}}
                 onClick={() => tile !== null && moveTile(idx)}
                 className={`
