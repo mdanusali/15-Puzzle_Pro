@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #0a0a0a;
+  --color-surface-dim: #0a0a0a;
+  --color-surface-bright: #262626;
+  --color-surface-container-lowest: #050505;
+  --color-surface-container-low: #121212;
+  --color-surface-container: #171717;
+  --color-surface-container-high: #262626;
+  --color-surface-container-highest: #404040;
+  
+  --color-primary: #2563eb;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #2563eb;
+  --color-on-primary-container: #ffffff;
+  
+  --color-secondary: #10b981;
+  --color-on-secondary: #ffffff;
+  
+  --color-on-surface: #e2e8f0;
+  --color-on-surface-variant: #64748b;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --shadow-tile: 0 6px 0 0 #1e40af, inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-tile-pressed: 0 2px 0 0 #1e40af, inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  --shadow-board-inset: inset 0 4px 12px 0 rgba(0, 0, 0, 0.6);
+  --shadow-bento-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+@layer utilities {
+  .tile-shadow {
+    box-shadow: var(--shadow-tile);
+  }
+  .tile-pressed {
+    transform: translateY(4px);
+    box-shadow: var(--shadow-tile-pressed);
+  }
+  .board-inset {
+    box-shadow: var(--shadow-board-inset);
+  }
+  .bento-card {
+    background-color: #171717;
+    border: 1px solid #262626;
+    border-radius: 1.5rem;
+  }
+  .tactile-button {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tactile-button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
