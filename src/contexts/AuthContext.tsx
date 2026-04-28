@@ -28,13 +28,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      if (user) {
-        await syncUserProfile(user);
-      } else {
-        setUserStats(null);
+      try {
+        setUser(user);
+        if (user) {
+          await syncUserProfile(user);
+        } else {
+          setUserStats(null);
+        }
+      } catch (error) {
+        console.error("Auth state change error:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -79,7 +84,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Facebook Sign-In Error", error);
-      alert("Facebook Sign-In requires configuration in Firebase Console. Please ensure your Facebook App ID is linked.");
     }
   };
 

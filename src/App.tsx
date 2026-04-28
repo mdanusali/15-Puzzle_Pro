@@ -5,12 +5,15 @@ import { StatsScreen, LeaderboardScreen } from './components/StatsScreens';
 import { SettingsScreen } from './components/SettingsScreen';
 import { HistoryScreen } from './components/HistoryScreen';
 import { usePuzzle } from './hooks/usePuzzle';
+import { useAuth } from './contexts/AuthContext';
 import { View } from './types';
+import { Loader2 } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('play');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { state, moveTile, shuffleGame, initGame } = usePuzzle();
+  const { loading } = useAuth();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -60,6 +63,23 @@ export default function App() {
       default: return '';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center gap-6">
+        <div className="relative">
+          <div className="w-20 h-20 bg-blue-600/10 rounded-3xl border border-blue-500/20 flex items-center justify-center animate-pulse">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white">P</div>
+          </div>
+          <Loader2 className="absolute -bottom-2 -right-2 text-blue-500 animate-spin" size={24} />
+        </div>
+        <div className="text-center">
+          <p className="text-white font-black italic text-xl tracking-tighter mb-1 uppercase">Initializing Matrix</p>
+          <p className="text-neutral-500 text-[10px] font-bold uppercase tracking-[0.3em]">Synchronizing neural nodes...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-950 text-slate-200 font-sans selection:bg-blue-600/30 overflow-x-hidden">
