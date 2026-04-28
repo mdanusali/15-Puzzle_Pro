@@ -11,14 +11,14 @@ interface PuzzleBoardProps {
 
 export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) {
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-4 sm:gap-8 w-full max-w-full overflow-hidden">
       <div className="h-8">
         <AnimatePresence>
           {state.isVictory && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-emerald-400 font-black uppercase tracking-[0.3em] text-xs flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20"
+              className="text-emerald-400 font-black uppercase tracking-[0.3em] text-[10px] sm:text-xs flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
             >
               <Sparkles size={14} /> MISSION ACCOMPLISHED
             </motion.div>
@@ -26,19 +26,19 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
         </AnimatePresence>
       </div>
 
-      <div className="bg-neutral-900/40 p-12 rounded-[3rem] border border-neutral-800 relative overflow-hidden">
+      <div className="bg-neutral-900/40 p-4 sm:p-8 lg:p-12 rounded-[2rem] sm:rounded-[3rem] border border-neutral-800 relative overflow-hidden w-full max-w-[480px]">
         {/* Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 sm:w-80 h-40 sm:h-80 bg-blue-600/10 blur-[40px] sm:blur-[80px] rounded-full pointer-events-none"></div>
         
-        <div className="relative z-10 bg-neutral-950 p-5 rounded-[2.5rem] border-4 border-neutral-900 shadow-2xl">
-          <div className="grid grid-cols-4 gap-3 w-[420px] h-[420px]">
+        <div className="relative z-10 bg-neutral-950 p-2 sm:p-5 rounded-[1.5rem] sm:rounded-[2.5rem] border-4 border-neutral-900 shadow-2xl">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3 aspect-square w-full">
             {state.tiles.map((tile, idx) => (
               <motion.div
                 key={tile || 'empty'}
                 layout
                 onClick={() => tile !== null && moveTile(idx)}
                 className={`
-                  rounded-2xl flex items-center justify-center select-none transition-all duration-75 text-3xl font-black
+                  rounded-lg sm:rounded-2xl flex items-center justify-center select-none transition-all duration-75 text-xl sm:text-3xl font-black aspect-square
                   ${tile === null 
                     ? 'bg-neutral-900 border-2 border-dashed border-neutral-800' 
                     : 'bg-blue-600 text-white cursor-pointer tile-shadow hover:brightness-110 active:tile-pressed border border-blue-400/20'
@@ -71,9 +71,21 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
   };
 
   return (
-    <div className="w-80 flex flex-col gap-6">
+    <div className="w-full sm:w-80 flex flex-col gap-4 sm:gap-6">
+      {/* Stats Bento (On mobile, we show these first) */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 order-first lg:order-none">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
+          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Moves</div>
+          <div className="text-2xl sm:text-3xl font-black text-white italic">{moves}</div>
+        </div>
+        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
+          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Timer</div>
+          <div className="text-2xl sm:text-3xl font-black text-emerald-400 italic">{formatTime(seconds)}</div>
+        </div>
+      </div>
+
       {/* Game Mode Selector */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5">
         <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-3 block">Operation Mode</label>
         <select 
           value={currentMode}
@@ -88,7 +100,7 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
       </div>
 
       {/* Main Action */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5">
         <button 
           onClick={onShuffle}
           className="w-full bg-white text-black py-4 rounded-2xl font-black uppercase tracking-tighter text-sm shadow-[0_4px_0_0_#d1d5db] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
@@ -98,22 +110,10 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
         </button>
       </div>
 
-      {/* Stats Bento */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 flex flex-col items-center justify-center">
-          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Moves</div>
-          <div className="text-3xl font-black text-white italic">{moves}</div>
-        </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 flex flex-col items-center justify-center">
-          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Timer</div>
-          <div className="text-3xl font-black text-emerald-400 italic">{formatTime(seconds)}</div>
-        </div>
-      </div>
-
       {/* Secondary Controls */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 flex gap-2">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5 flex gap-2">
         <button className="flex-1 bg-neutral-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-neutral-700 opacity-50 cursor-not-allowed">
-          AutoSolve
+          Auto
         </button>
         <button className="flex-1 bg-neutral-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-neutral-700 opacity-50 cursor-not-allowed">
           Undo
