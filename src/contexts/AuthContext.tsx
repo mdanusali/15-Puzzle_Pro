@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { 
   User, 
   onAuthStateChanged, 
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
-  const syncUserProfile = async (user: User) => {
+  const syncUserProfile = useCallback(async (user: User) => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDoc = await getDoc(userDocRef);
 
@@ -69,9 +69,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setUserStats(userDoc.data());
     }
-  };
+  }, []);
 
-  const updateProfileName = async (name: string) => {
+  const updateProfileName = useCallback(async (name: string) => {
     if (!user) return;
     try {
       await firebaseUpdateProfile(user, { displayName: name });
@@ -82,9 +82,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Update profile name error:", error);
       throw error;
     }
-  };
+  }, [user]);
 
-  const resetUserStats = async () => {
+  const resetUserStats = useCallback(async () => {
     if (!user) return;
     try {
       const userDocRef = doc(db, 'users', user.uid);
@@ -102,31 +102,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Reset user stats error:", error);
       throw error;
     }
-  };
+  }, [user]);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = useCallback(async () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Google Sign-In Error", error);
     }
-  };
+  }, []);
 
-  const signInWithFacebook = async () => {
+  const signInWithFacebook = useCallback(async () => {
     const provider = new FacebookAuthProvider();
     try {
-      // Note: This requires Facebook App setup in Firebase Console
       await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Facebook Sign-In Error", error);
     }
-  };
+  }, []);
 
-  const logout = () => signOut(auth);
+  const logout = useCallback(() => signOut(auth), []);
+
+  const value = React.useMemo(() => ({ 
+    user, 
+    loading, 
+    signInWithGoogle, 
+    signInWithFacebook, 
+    logout, 
+    userStats,
+    updateProfileName,
+    resetUserStats
+  }), [user, loading, userStats, signInWithGoogle, signInWithFacebook, logout, updateProfileName, resetUserStats]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signInWithFacebook, logout, userStats }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

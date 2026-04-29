@@ -58,12 +58,10 @@ service cloud.firestore {
     }
 
     // --- Leaderboard ---
-    match /leaderboard/{mode}/{userId} {
+    match /leaderboard/{mode}/entries/{userId} {
       allow read: if isSignedIn();
-      allow create: if isOwner(userId) && isValidLeaderboard(request.resource.data) && mode == request.resource.data.mode;
+      allow create: if isOwner(userId) && isValidLeaderboard(request.resource.data) && mode == request.resource.data.timeCategory;
       allow update: if isOwner(userId) && isValidLeaderboard(request.resource.data) && (
-        // Only allow update if the new result is actually better (or at least valid)
-        // In a real app we might check if request.resource.data.seconds < resource.data.seconds
         isValidLeaderboardUpdate()
       );
       allow delete: if false;
@@ -74,7 +72,7 @@ service cloud.firestore {
           && data.displayName is string && data.displayName.size() <= 100
           && data.moves is number && data.moves >= 0
           && data.seconds is number && data.seconds >= 0
-          && data.mode is string;
+          && data.timeCategory is string;
       }
 
       function isValidLeaderboardUpdate() {

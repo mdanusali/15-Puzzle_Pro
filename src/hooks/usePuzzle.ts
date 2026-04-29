@@ -108,10 +108,6 @@ export function usePuzzle() {
         }
         triggerHaptic();
 
-        if (isVictory && auth.currentUser) {
-          saveGameResult(s.moves + 1, s.seconds, s.mode);
-        }
-
         return {
           ...s,
           tiles: newTiles,
@@ -123,6 +119,12 @@ export function usePuzzle() {
       return s;
     });
   }, [playSFX, triggerHaptic]);
+
+  useEffect(() => {
+    if (state.isVictory && auth.currentUser) {
+      saveGameResult(state.moves, state.seconds, state.mode);
+    }
+  }, [state.isVictory]);
 
   useEffect(() => {
     initGame();
@@ -184,7 +186,7 @@ export function usePuzzle() {
       ];
 
       for (const cat of leadCategories) {
-        const leaderboardRef = doc(db, 'leaderboard', cat, user.uid);
+        const leaderboardRef = doc(db, 'leaderboard', cat, 'entries', user.uid);
         const currentLead = await getDoc(leaderboardRef);
         
         if (!currentLead.exists() || seconds < currentLead.data().seconds) {

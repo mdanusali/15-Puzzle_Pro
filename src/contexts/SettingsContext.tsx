@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { GameSettings } from '../types';
 
 interface SettingsContextType {
@@ -28,15 +28,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-theme', settings.theme);
   }, [settings]);
 
-  const updateSettings = (newSettings: Partial<GameSettings>) => {
+  const updateSettings = useCallback((newSettings: Partial<GameSettings>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
-  };
+  }, []);
 
-  const playSFX = (type: 'move' | 'victory' | 'click') => {
+  const playSFX = useCallback((type: 'move' | 'victory' | 'click') => {
     if (!settings.sfx) return;
     
-    // In a real app we would play audio files here
-    // For now we'll use AudioContext for some basic tones
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
       const oscillator = audioCtx.createOscillator();
@@ -68,17 +66,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.warn("AudioContext failed", e);
     }
-  };
+  }, [settings.sfx]);
 
-  const triggerHaptic = () => {
+  const triggerHaptic = useCallback(() => {
     if (!settings.haptics) return;
     if ('vibrate' in navigator) {
       navigator.vibrate(10);
     }
-  };
+  }, [settings.haptics]);
+
+  const value = React.useMemo(() => ({
+    settings,
+    updateSettings,
+    playSFX,
+    triggerHaptic
+  }), [settings, updateSettings, playSFX, triggerHaptic]);
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings, playSFX, triggerHaptic }}>
+    <SettingsContext.Provider value={value}>
       {children}
     </SettingsContext.Provider>
   );
