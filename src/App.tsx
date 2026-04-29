@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react';
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('play');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const { state, moveTile, shuffleGame, initGame } = usePuzzle();
+  const { state, moveTile, shuffleGame, initGame, undoMove, togglePause } = usePuzzle();
   const { loading } = useAuth();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
@@ -28,6 +28,7 @@ export default function App() {
                   state={state} 
                   moveTile={moveTile} 
                   shuffleGame={shuffleGame} 
+                  onTogglePause={togglePause}
                 />
               </div>
               <ControlPanel 
@@ -36,6 +37,12 @@ export default function App() {
                 currentMode={state.mode}
                 moves={state.moves}
                 seconds={state.seconds}
+                isStarted={state.isStarted}
+                isVictory={state.isVictory}
+                isPaused={state.isPaused}
+                historyLength={state.history.length}
+                onUndo={undoMove}
+                onTogglePause={togglePause}
               />
             </div>
           </div>

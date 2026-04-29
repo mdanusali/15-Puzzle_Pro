@@ -20,10 +20,53 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, where, Timestamp } from 'firebase/firestore';
+
+const getTier = (xp: number = 0) => {
+  if (xp < 500) return 'Initiate';
+  if (xp < 1500) return 'Novice';
+  if (xp < 3000) return 'Competitor';
+  if (xp < 6000) return 'Elite';
+  if (xp < 10000) return 'Master';
+  return 'Grandmaster';
+};
 
 export function StatsScreen() {
-  const { userStats } = useAuth();
+  const { user, userStats } = useAuth();
+  const [activity, setActivity] = useState<number[]>(Array(7).fill(0));
+  
+  useEffect(() => {
+    if (!user) return;
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const q = query(
+      collection(db, `games/${user.uid}/history`),
+      where('timestamp', '>=', Timestamp.fromDate(sevenDaysAgo)),
+      orderBy('timestamp', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const counts = Array(7).fill(0);
+      const now = new Date();
+      now.setHours(23, 59, 59, 999);
+
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const date = data.timestamp?.toDate();
+        if (date) {
+          const diff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+          if (diff >= 0 && diff < 7) {
+            counts[6 - diff]++;
+          }
+        }
+      });
+      setActivity(counts);
+    });
+
+    return unsubscribe;
+  }, [user]);
   
   const formatTime = (s: number) => {
     if (!s) return '0:00';
@@ -37,6 +80,8 @@ export function StatsScreen() {
     { label: 'BEST TIME', value: formatTime(userStats?.bestTime), icon: Timer, color: 'text-emerald-400', borderColor: 'border-emerald-500/20' },
     { label: 'TOTAL MOVES', value: userStats?.totalMoves || 0, icon: MoveUp, color: 'text-white', borderColor: 'border-white/10' },
   ];
+
+  const maxActivity = Math.max(...activity, 1);
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto pb-12 w-full">
@@ -62,23 +107,26 @@ export function StatsScreen() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-4">
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight italic">Activity</h3>
-              <p className="text-sm font-medium text-text-secondary">Last 7 days performance metrics</p>
+              <p className="text-sm font-medium text-text-secondary">Games completed over last 7 days</p>
             </div>
             <div className="px-5 py-2 bg-bg-page rounded-full text-[10px] font-bold text-text-secondary border border-border-panel">WEEKLY VIEW</div>
           </div>
           <div className="h-48 sm:h-64 bg-bg-page rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex items-end justify-between gap-2 sm:gap-6 border border-border-panel shadow-inner overflow-hidden">
-            {[60, 85, 45, 95, 30, 70, 55].map((h, i) => (
+            {activity.map((count, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 sm:gap-4 h-full justify-end">
                 <div className="w-full bg-blue-600/10 rounded-lg sm:rounded-xl relative h-24 sm:h-32 overflow-hidden border border-white/5">
                   <motion.div 
                     initial={{ height: 0 }}
-                    animate={{ height: `${h}%` }}
+                    animate={{ height: `${(count / maxActivity) * 100}%` }}
                     transition={{ duration: 1, delay: i * 0.1 }}
                     className="absolute bottom-0 w-full bg-blue-600 rounded-t-lg sm:rounded-t-xl shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                   />
+                  {count > 0 && (
+                    <div className="absolute top-1 left-1/2 -translate-x-1/2 text-[8px] font-black text-blue-500">{count}</div>
+                  )}
                 </div>
                 <span className="text-[10px] sm:text-[10px] font-black text-text-secondary italic">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'][(new Date().getDay() + i + 1) % 7]}
                 </span>
               </div>
             ))}
@@ -87,7 +135,7 @@ export function StatsScreen() {
 
         <div className="bg-bg-panel border border-border-panel rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl flex flex-col">
           <h3 className="text-xl sm:text-2xl font-black text-text-primary italic mb-2">Level {userStats?.level || 1}</h3>
-          <p className="text-sm font-medium text-text-secondary mb-6 sm:mb-10 tracking-tight">{userStats?.xp || 0} XP • Tier 1</p>
+          <p className="text-sm font-medium text-text-secondary mb-6 sm:mb-10 tracking-tight">{userStats?.xp || 0} XP • {getTier(userStats?.xp)}</p>
           <div className="flex-1 flex flex-col justify-center items-center py-4">
             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-8 p-1 bg-bg-page rounded-full border border-border-panel">
               <svg className="w-full h-full -rotate-90">
@@ -142,7 +190,7 @@ export function LeaderboardScreen() {
 
     setLoading(true);
     const q = query(
-      collection(db, 'leaderboard', cat, 'entries'),
+      collection(db, `leaderboard/${cat}/entries`),
       orderBy('seconds', 'asc'),
       limit(20)
     );

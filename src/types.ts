@@ -7,7 +7,9 @@ export interface GameState {
   seconds: number;
   isStarted: boolean;
   isVictory: boolean;
+  isPaused: boolean;
   mode: GameMode;
+  history: (number | null)[][];
 }
 
 export interface GameSettings {

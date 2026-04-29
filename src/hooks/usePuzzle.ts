@@ -16,7 +16,9 @@ export function usePuzzle() {
     seconds: 0,
     isStarted: false,
     isVictory: false,
+    isPaused: false,
     mode: 'linear_asc',
+    history: [],
   });
 
   const getTargetState = useCallback((mode: GameMode) => {
@@ -46,7 +48,9 @@ export function usePuzzle() {
       seconds: 0,
       isStarted: false,
       isVictory: false,
+      isPaused: false,
       mode,
+      history: [],
     }));
   }, [state.mode, getTargetState]);
 
@@ -69,7 +73,7 @@ export function usePuzzle() {
         
         const next = neighbors[Math.floor(Math.random() * neighbors.length)];
         [newTiles[empty], newTiles[next]] = [newTiles[next], newTiles[empty]];
-        lastMove = empty; // Track last empty position to avoid immediate reverse moves
+        lastMove = empty;
       }
       
       return { 
@@ -79,14 +83,16 @@ export function usePuzzle() {
         moves: 0, 
         seconds: 0, 
         isStarted: true, 
-        isVictory: false 
+        isVictory: false,
+        isPaused: false,
+        history: []
       };
     });
   }, [state.mode, getTargetState]);
 
   const moveTile = useCallback((idx: number) => {
     setState((s) => {
-      if (s.isVictory) return s;
+      if (s.isVictory || s.isPaused) return s;
       
       const emptyIdx = s.tiles.indexOf(null);
       const row = Math.floor(idx / 4);
@@ -96,11 +102,11 @@ export function usePuzzle() {
 
       if (Math.abs(row - eRow) + Math.abs(col - eCol) === 1) {
         const newTiles = [...s.tiles];
+        const prevTiles = [...s.tiles];
         [newTiles[idx], newTiles[emptyIdx]] = [newTiles[emptyIdx], newTiles[idx]];
         
         const isVictory = newTiles.every((v, i) => v === s.targetState[i]);
 
-        // Feedback
         if (isVictory) {
           playSFX('victory');
         } else {
@@ -114,11 +120,32 @@ export function usePuzzle() {
           moves: s.moves + 1,
           isStarted: true,
           isVictory,
+          history: [prevTiles, ...s.history].slice(0, 50)
         };
       }
       return s;
     });
   }, [playSFX, triggerHaptic]);
+
+  const undoMove = useCallback(() => {
+    setState((s) => {
+      if (s.history.length === 0 || s.isVictory || s.isPaused) return s;
+      const [prevTiles, ...newHistory] = s.history;
+      return {
+        ...s,
+        tiles: prevTiles,
+        moves: Math.max(0, s.moves - 1),
+        history: newHistory
+      };
+    });
+  }, []);
+
+  const togglePause = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      isPaused: !s.isPaused && s.isStarted
+    }));
+  }, []);
 
   useEffect(() => {
     if (state.isVictory && auth.currentUser) {
@@ -132,21 +159,20 @@ export function usePuzzle() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (state.isStarted && !state.isVictory) {
+    if (state.isStarted && !state.isVictory && !state.isPaused) {
       interval = setInterval(() => {
         setState((s) => ({ ...s, seconds: s.seconds + 1 }));
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [state.isStarted, state.isVictory]);
+  }, [state.isStarted, state.isVictory, state.isPaused]);
 
   const saveGameResult = async (moves: number, seconds: number, mode: GameMode) => {
     const user = auth.currentUser;
     if (!user) return;
 
     try {
-      // 1. Save to history
-      await addDoc(collection(db, 'games', user.uid, 'history'), {
+      await addDoc(collection(db, `games/${user.uid}/history`), {
         userId: user.uid,
         mode,
         moves,
@@ -154,7 +180,6 @@ export function usePuzzle() {
         timestamp: serverTimestamp()
       });
 
-      // 2. Update user stats
       const userRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userRef);
       const currentBest = userDoc.data()?.bestTime || 999999;
@@ -162,16 +187,14 @@ export function usePuzzle() {
       await updateDoc(userRef, {
         totalGames: increment(1),
         totalMoves: increment(moves),
-        xp: increment(Math.max(10, 100 - seconds)), // Simple XP logic
+        xp: increment(Math.max(10, 100 - seconds)), 
         bestTime: Math.min(currentBest, seconds),
         updatedAt: serverTimestamp()
       });
 
-      // 3. Update leaderboards (All-time, Daily, and Weekly)
       const now = new Date();
       const dateKey = now.toISOString().split('T')[0];
       
-      // Weekly key (YYYY-WW)
       const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
       const dayNum = d.getUTCDay() || 7;
       d.setUTCDate(d.getUTCDate() + 4 - dayNum);
@@ -186,7 +209,7 @@ export function usePuzzle() {
       ];
 
       for (const cat of leadCategories) {
-        const leaderboardRef = doc(db, 'leaderboard', cat, 'entries', user.uid);
+        const leaderboardRef = doc(db, `leaderboard/${cat}/entries`, user.uid);
         const currentLead = await getDoc(leaderboardRef);
         
         if (!currentLead.exists() || seconds < currentLead.data().seconds) {
@@ -207,5 +230,5 @@ export function usePuzzle() {
     }
   };
 
-  return { state, moveTile, shuffleGame, initGame };
+  return { state, moveTile, shuffleGame, initGame, undoMove, togglePause };
 }
