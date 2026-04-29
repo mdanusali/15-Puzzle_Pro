@@ -190,7 +190,7 @@ export function LeaderboardScreen() {
 
     setLoading(true);
     const q = query(
-      collection(db, `leaderboard/${cat}/entries`),
+      collection(db, 'leaderboard', cat, 'entries'),
       orderBy('seconds', 'asc'),
       limit(20)
     );

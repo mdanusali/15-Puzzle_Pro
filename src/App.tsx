@@ -21,9 +21,9 @@ export default function App() {
     switch (currentView) {
       case 'play':
         return (
-          <div className="flex flex-col items-center gap-12 pt-0 lg:pt-8 w-full">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center lg:items-start w-full justify-center">
-              <div className="flex flex-col items-center w-full lg:w-auto">
+          <div className="flex flex-col items-center gap-12 w-full">
+            <div className="flex flex-col xl:flex-row gap-12 xl:gap-24 items-center xl:items-start w-full justify-center">
+              <div className="flex flex-col items-center w-full xl:w-auto">
                 <PuzzleBoard 
                   state={state} 
                   moveTile={moveTile} 
@@ -31,19 +31,21 @@ export default function App() {
                   onTogglePause={togglePause}
                 />
               </div>
-              <ControlPanel 
-                onShuffle={shuffleGame} 
-                onModeChange={initGame} 
-                currentMode={state.mode}
-                moves={state.moves}
-                seconds={state.seconds}
-                isStarted={state.isStarted}
-                isVictory={state.isVictory}
-                isPaused={state.isPaused}
-                historyLength={state.history.length}
-                onUndo={undoMove}
-                onTogglePause={togglePause}
-              />
+              <div className="flex flex-col items-center xl:items-start w-full xl:w-80">
+                <ControlPanel 
+                  onShuffle={shuffleGame} 
+                  onModeChange={initGame} 
+                  onUndo={undoMove}
+                  onTogglePause={togglePause}
+                  currentMode={state.mode}
+                  moves={state.moves}
+                  seconds={state.seconds}
+                  isStarted={state.isStarted}
+                  isVictory={state.isVictory}
+                  isPaused={state.isPaused}
+                  historyLength={state.history.length}
+                />
+              </div>
             </div>
           </div>
         );
@@ -98,8 +100,10 @@ export default function App() {
       />
       <TopBar title={getTitle()} onToggleMenu={toggleSidebar} />
       
-      <main className="lg:ml-64 pt-24 px-4 sm:px-8 lg:px-12 pb-24 transition-all duration-300 min-h-screen">
-        {renderContent()}
+      <main className="lg:ml-64 pt-20 lg:pt-24 px-4 sm:px-8 lg:px-16 pb-24 transition-all duration-300 min-h-screen flex flex-col items-center">
+        <div className="w-full max-w-6xl">
+          {renderContent()}
+        </div>
       </main>
 
       <footer className="fixed bottom-0 lg:left-64 left-0 right-0 h-14 lg:h-12 bg-bg-panel border-t border-border-panel flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 lg:px-12 text-[10px] font-bold text-text-secondary uppercase tracking-widest z-30 shrink-0 gap-2 lg:gap-0">

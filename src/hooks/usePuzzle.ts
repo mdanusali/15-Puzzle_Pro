@@ -170,9 +170,11 @@ export function usePuzzle() {
   const saveGameResult = async (moves: number, seconds: number, mode: GameMode) => {
     const user = auth.currentUser;
     if (!user) return;
+    
+    const dateKey = new Date().toISOString().split('T')[0];
 
     try {
-      await addDoc(collection(db, `games/${user.uid}/history`), {
+      await addDoc(collection(db, 'games', user.uid, 'history'), {
         userId: user.uid,
         mode,
         moves,
@@ -209,7 +211,7 @@ export function usePuzzle() {
       ];
 
       for (const cat of leadCategories) {
-        const leaderboardRef = doc(db, `leaderboard/${cat}/entries`, user.uid);
+        const leaderboardRef = doc(db, 'leaderboard', cat, 'entries', user.uid);
         const currentLead = await getDoc(leaderboardRef);
         
         if (!currentLead.exists() || seconds < currentLead.data().seconds) {
