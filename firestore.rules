@@ -53,7 +53,7 @@ service cloud.firestore {
           && data.timestamp == request.time
           && data.moves is number && data.moves >= 0
           && data.seconds is number && data.seconds >= 0
-          && data.mode in ['classic', 'modern', 'brutalist'];
+          && data.mode in ['linear_asc', 'linear_desc', 'snake_asc', 'spiral_asc'];
       }
     }
 

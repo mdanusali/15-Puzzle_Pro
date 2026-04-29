@@ -165,19 +165,40 @@ export function usePuzzle() {
         updatedAt: serverTimestamp()
       });
 
-      // 3. Update leaderboard
-      const leaderboardRef = doc(db, 'leaderboard', mode, user.uid);
-      const currentLead = await getDoc(leaderboardRef);
-      if (!currentLead.exists() || seconds < currentLead.data().seconds) {
-        await setDoc(leaderboardRef, {
-          userId: user.uid,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          moves,
-          seconds,
-          mode,
-          timestamp: serverTimestamp()
-        });
+      // 3. Update leaderboards (All-time, Daily, and Weekly)
+      const now = new Date();
+      const dateKey = now.toISOString().split('T')[0];
+      
+      // Weekly key (YYYY-WW)
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+      const weekKey = `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+
+      const leadCategories = [
+        `alltime_${mode}`,
+        `daily_${dateKey}_${mode}`,
+        `weekly_${weekKey}_${mode}`
+      ];
+
+      for (const cat of leadCategories) {
+        const leaderboardRef = doc(db, 'leaderboard', cat, user.uid);
+        const currentLead = await getDoc(leaderboardRef);
+        
+        if (!currentLead.exists() || seconds < currentLead.data().seconds) {
+          await setDoc(leaderboardRef, {
+            userId: user.uid,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            moves,
+            seconds,
+            mode,
+            timeCategory: cat,
+            timestamp: serverTimestamp()
+          });
+        }
       }
     } catch (error) {
       console.error("Error saving game result:", error);

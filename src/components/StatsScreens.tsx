@@ -120,11 +120,29 @@ export function StatsScreen() {
 export function LeaderboardScreen() {
   const [leaders, setLeaders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filterMode, setFilterMode] = useState<string>('linear_asc');
+  const [filterTime, setFilterTime] = useState<'alltime' | 'daily' | 'weekly'>('alltime');
 
   useEffect(() => {
-    // Defaulting to linear_asc for now
+    let cat = `alltime_${filterMode}`;
+    const now = new Date();
+
+    if (filterTime === 'daily') {
+      const dateKey = now.toISOString().split('T')[0];
+      cat = `daily_${dateKey}_${filterMode}`;
+    } else if (filterTime === 'weekly') {
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+      const weekKey = `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+      cat = `weekly_${weekKey}_${filterMode}`;
+    }
+
+    setLoading(true);
     const q = query(
-      collection(db, 'leaderboard', 'linear_asc'),
+      collection(db, 'leaderboard', cat),
       orderBy('seconds', 'asc'),
       limit(20)
     );
@@ -142,7 +160,7 @@ export function LeaderboardScreen() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [filterMode, filterTime]);
 
   const formatTime = (s: number) => {
     const mins = Math.floor(s / 60);
@@ -164,9 +182,29 @@ export function LeaderboardScreen() {
           <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter italic">Global Ranks</h2>
           <p className="text-neutral-500 font-medium text-sm sm:text-base">Competitive standings for current season.</p>
         </div>
-        <div className="flex bg-neutral-900 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border border-neutral-800 shadow-xl w-full sm:w-auto">
-          <button className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-2.5 bg-blue-600 text-white rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-lg border border-blue-400/20">Linear Asc</button>
-          <button className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-2.5 text-neutral-500 hover:text-neutral-300 font-bold text-[10px] sm:text-xs uppercase tracking-widest">More Modes</button>
+        <div className="space-y-4 w-full sm:w-auto">
+          <div className="flex bg-neutral-900 p-1.5 rounded-xl border border-neutral-800 shadow-xl overflow-x-auto">
+            {['linear_asc', 'linear_desc', 'snake_asc', 'spiral_asc'].map((m) => (
+              <button 
+                key={m}
+                onClick={() => setFilterMode(m)}
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${filterMode === m ? 'bg-blue-600 text-white shadow-lg' : 'text-neutral-500 hover:text-neutral-300'}`}
+              >
+                {m.replace('_', ' ')}
+              </button>
+            ))}
+          </div>
+          <div className="flex bg-neutral-900 p-1 rounded-xl border border-neutral-800 shadow-xl w-fit ml-auto">
+            {(['alltime', 'weekly', 'daily'] as const).map((t) => (
+              <button 
+                key={t}
+                onClick={() => setFilterTime(t)}
+                className={`px-4 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest transition-colors ${filterTime === t ? 'bg-neutral-800 text-blue-500' : 'text-neutral-600 hover:text-neutral-400'}`}
+              >
+                {t === 'alltime' ? 'All-Time' : t === 'weekly' ? 'This Week' : 'Today'}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
