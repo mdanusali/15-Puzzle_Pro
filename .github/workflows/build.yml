@@ -1,13 +1,15 @@
-name: Node.js Build
+name: Node.js Build and Deploy
 
 on:
   push:
-    branches: [ "main" ] # Runs whenever you push to the main branch
-  workflow_dispatch: # Allows you to run the build manually from the Actions tab
+    branches: [ "main" ]
+  workflow_dispatch:
 
-# Required for peaceiris/actions-gh-pages to push to the repository
+# Permissions needed for modern GitHub Pages deployment
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -23,8 +25,8 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20' # Specify your required Node version
-        cache: 'npm' # Speeds up future builds by caching dependencies
+        node-version: '20'
+        cache: 'npm'
 
     - name: Install dependencies
       run: npm install
@@ -32,9 +34,21 @@ jobs:
     - name: Run Build
       run: npm run build
 
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v4
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+        path: './dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
