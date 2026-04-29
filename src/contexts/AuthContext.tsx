@@ -5,10 +5,11 @@ import {
   signInWithPopup, 
   GoogleAuthProvider, 
   FacebookAuthProvider,
-  signOut 
+  signOut,
+  updateProfile as firebaseUpdateProfile
 } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, deleteDoc } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
@@ -17,6 +18,8 @@ interface AuthContextType {
   signInWithFacebook: () => Promise<void>;
   logout: () => Promise<void>;
   userStats: any;
+  updateProfileName: (name: string) => Promise<void>;
+  resetUserStats: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,6 +68,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserStats(initialData);
     } else {
       setUserStats(userDoc.data());
+    }
+  };
+
+  const updateProfileName = async (name: string) => {
+    if (!user) return;
+    try {
+      await firebaseUpdateProfile(user, { displayName: name });
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, { displayName: name, updatedAt: serverTimestamp() }, { merge: true });
+      setUserStats((prev: any) => ({ ...prev, displayName: name }));
+    } catch (error) {
+      console.error("Update profile name error:", error);
+      throw error;
+    }
+  };
+
+  const resetUserStats = async () => {
+    if (!user) return;
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const resetData = {
+        xp: 0,
+        level: 1,
+        totalGames: 0,
+        totalMoves: 0,
+        bestTime: 0,
+        updatedAt: serverTimestamp()
+      };
+      await setDoc(userDocRef, resetData, { merge: true });
+      setUserStats((prev: any) => ({ ...prev, ...resetData }));
+    } catch (error) {
+      console.error("Reset user stats error:", error);
+      throw error;
     }
   };
 

@@ -26,11 +26,11 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
         </AnimatePresence>
       </div>
 
-      <div className="bg-neutral-900/40 p-4 sm:p-8 lg:p-12 rounded-[2rem] sm:rounded-[3rem] border border-neutral-800 relative overflow-hidden w-full max-w-[480px]">
+      <div className="bg-bg-panel p-4 sm:p-8 lg:p-12 rounded-[2rem] sm:rounded-[3rem] border border-border-panel relative overflow-hidden w-full max-w-[480px]">
         {/* Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 sm:w-80 h-40 sm:h-80 bg-blue-600/10 blur-[40px] sm:blur-[80px] rounded-full pointer-events-none"></div>
         
-        <div className="relative z-10 bg-neutral-950 p-2 sm:p-5 rounded-[1.5rem] sm:rounded-[2.5rem] border-4 border-neutral-900 shadow-2xl">
+        <div className="relative z-10 bg-bg-page p-2 sm:p-5 rounded-[1.5rem] sm:rounded-[2.5rem] border-4 border-border-panel shadow-2xl">
           <div className="grid grid-cols-4 gap-2 sm:gap-3 aspect-square w-full">
             {state.tiles.map((tile, idx) => (
               <motion.div
@@ -53,7 +53,7 @@ export function PuzzleBoard({ state, moveTile, shuffleGame }: PuzzleBoardProps) 
                 className={`
                   rounded-lg sm:rounded-2xl flex items-center justify-center select-none text-xl sm:text-3xl font-black aspect-square transition-colors
                   ${tile === null 
-                    ? 'bg-neutral-900 border-2 border-dashed border-neutral-800' 
+                    ? 'bg-bg-panel border-2 border-dashed border-border-panel' 
                     : 'bg-blue-600 text-white cursor-pointer shadow-[0_4px_0_0_#1d4ed8] active:shadow-none border border-blue-400/20'
                   }
                 `}
@@ -87,23 +87,23 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
     <div className="w-full sm:w-80 flex flex-col gap-4 sm:gap-6">
       {/* Stats Bento (On mobile, we show these first) */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 order-first lg:order-none">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
-          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Moves</div>
-          <div className="text-2xl sm:text-3xl font-black text-white italic">{moves}</div>
+        <div className="bg-bg-panel border border-border-panel rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
+          <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest leading-none mb-2">Moves</div>
+          <div className="text-2xl sm:text-3xl font-black italic">{moves}</div>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
-          <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest leading-none mb-2">Timer</div>
+        <div className="bg-bg-panel border border-border-panel rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center">
+          <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest leading-none mb-2">Timer</div>
           <div className="text-2xl sm:text-3xl font-black text-emerald-400 italic">{formatTime(seconds)}</div>
         </div>
       </div>
 
       {/* Game Mode Selector */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5">
-        <label className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-3 block">Operation Mode</label>
+      <div className="bg-bg-panel border border-border-panel rounded-3xl p-4 sm:p-5">
+        <label className="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-3 block">Operation Mode</label>
         <select 
           value={currentMode}
           onChange={(e) => onModeChange(e.target.value as GameMode)}
-          className="w-full bg-neutral-950 text-white border border-neutral-800 rounded-xl py-3 px-4 text-[11px] font-bold uppercase tracking-tight focus:ring-blue-500 outline-none"
+          className="w-full bg-bg-page text-text-primary border border-border-panel rounded-xl py-3 px-4 text-[11px] font-bold uppercase tracking-tight focus:ring-blue-500 outline-none"
         >
           <option value="linear_asc">Standard Linear</option>
           <option value="linear_desc">Reverse Linear</option>
@@ -113,10 +113,10 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
       </div>
 
       {/* Main Action */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5">
+      <div className="bg-bg-panel border border-border-panel rounded-3xl p-4 sm:p-5">
         <button 
           onClick={onShuffle}
-          className="w-full bg-white text-black py-4 rounded-2xl font-black uppercase tracking-tighter text-sm shadow-[0_4px_0_0_#d1d5db] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 text-white hover:bg-blue-500 py-4 rounded-2xl font-black uppercase tracking-tighter text-sm shadow-[0_4px_0_0_#1d4ed8] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
         >
           <Shuffle size={20} />
           Initialize Sequence
@@ -124,11 +124,11 @@ export function ControlPanel({ onShuffle, onModeChange, currentMode, moves, seco
       </div>
 
       {/* Secondary Controls */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-4 sm:p-5 flex gap-2">
-        <button className="flex-1 bg-neutral-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-neutral-700 opacity-50 cursor-not-allowed">
+      <div className="bg-bg-panel border border-border-panel rounded-3xl p-4 sm:p-5 flex gap-2">
+        <button className="flex-1 bg-bg-page text-text-primary py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-border-panel opacity-50 cursor-not-allowed">
           Auto
         </button>
-        <button className="flex-1 bg-neutral-800 text-white py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-neutral-700 opacity-50 cursor-not-allowed">
+        <button className="flex-1 bg-bg-page text-text-primary py-3 rounded-xl font-bold uppercase text-[10px] tracking-widest border border-border-panel opacity-50 cursor-not-allowed">
           Undo
         </button>
       </div>

@@ -2,11 +2,13 @@ import { useState, useCallback, useEffect } from 'react';
 import { GameMode, GameState } from '../types';
 import { db, auth } from '../lib/firebase';
 import { collection, addDoc, doc, updateDoc, increment, serverTimestamp, setDoc, getDoc } from 'firebase/firestore';
+import { useSettings } from '../contexts/SettingsContext';
 
 const SNAKE_MAP = [0, 1, 2, 3, 7, 6, 5, 4, 8, 9, 10, 11, 15, 14, 13, 12];
 const SPIRAL_MAP = [0, 1, 2, 3, 7, 11, 15, 14, 13, 12, 8, 4, 5, 6, 10, 9];
 
 export function usePuzzle() {
+  const { playSFX, triggerHaptic } = useSettings();
   const [state, setState] = useState<GameState>({
     tiles: [],
     targetState: [],
@@ -98,6 +100,14 @@ export function usePuzzle() {
         
         const isVictory = newTiles.every((v, i) => v === s.targetState[i]);
 
+        // Feedback
+        if (isVictory) {
+          playSFX('victory');
+        } else {
+          playSFX('move');
+        }
+        triggerHaptic();
+
         if (isVictory && auth.currentUser) {
           saveGameResult(s.moves + 1, s.seconds, s.mode);
         }
@@ -112,7 +122,7 @@ export function usePuzzle() {
       }
       return s;
     });
-  }, []);
+  }, [playSFX, triggerHaptic]);
 
   useEffect(() => {
     initGame();

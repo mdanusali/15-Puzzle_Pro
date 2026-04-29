@@ -82,7 +82,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-slate-200 font-sans selection:bg-blue-600/30 overflow-x-hidden">
+    <div className="min-h-screen bg-bg-page text-text-primary font-sans selection:bg-blue-600/30 overflow-x-hidden">
       <Sidebar 
         currentView={currentView} 
         setView={setCurrentView} 
@@ -95,7 +95,7 @@ export default function App() {
         {renderContent()}
       </main>
 
-      <footer className="fixed bottom-0 lg:left-64 left-0 right-0 h-14 lg:h-12 bg-neutral-900 border-t border-white/5 flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 lg:px-12 text-[10px] font-bold text-neutral-500 uppercase tracking-widest z-30 shrink-0 gap-2 lg:gap-0">
+      <footer className="fixed bottom-0 lg:left-64 left-0 right-0 h-14 lg:h-12 bg-bg-panel border-t border-border-panel flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 lg:px-12 text-[10px] font-bold text-text-secondary uppercase tracking-widest z-30 shrink-0 gap-2 lg:gap-0">
         <div className="flex gap-4 items-center">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>System Online: Node-FR2GM</span>

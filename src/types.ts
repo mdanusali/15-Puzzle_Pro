@@ -10,4 +10,11 @@ export interface GameState {
   mode: GameMode;
 }
 
+export interface GameSettings {
+  sfx: boolean;
+  music: boolean;
+  haptics: boolean;
+  theme: 'cobalt' | 'ivory';
+}
+
 export type View = 'play' | 'stats' | 'leaderboard' | 'settings';

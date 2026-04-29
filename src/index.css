@@ -29,6 +29,40 @@
   --shadow-tile-pressed: 0 2px 0 0 #1e40af, inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   --shadow-board-inset: inset 0 4px 12px 0 rgba(0, 0, 0, 0.6);
   --shadow-bento-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  /* Theme variables defaults (Cobalt) */
+  --color-app-bg: #050505;
+  --color-panel-bg: #171717;
+  --color-panel-border: #262626;
+  --color-text-main: #ffffff;
+  --color-text-muted: #737373;
+
+  /* Aliases for components */
+  --color-bg-page: var(--color-app-bg);
+  --color-bg-panel: var(--color-panel-bg);
+  --color-border-panel: var(--color-panel-border);
+  --color-text-primary: var(--color-text-main);
+  --color-text-secondary: var(--color-text-muted);
+}
+
+[data-theme='ivory'] {
+  --color-app-bg: #f1f5f9;
+  --color-panel-bg: #ffffff;
+  --color-panel-border: #e2e8f0;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-surface-container-lowest: #f8fafc;
+  --color-surface-container: #ffffff;
+  --color-surface-bright: #e2e8f0;
+  --color-surface-dim: #f1f5f9;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-app-bg);
+    color: var(--color-text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 }
 
 @layer utilities {

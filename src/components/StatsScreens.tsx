@@ -42,9 +42,9 @@ export function StatsScreen() {
     <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto pb-12 w-full">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-neutral-900 border border-neutral-800 rounded-[2rem] p-6 sm:p-8 flex flex-col justify-between h-40 sm:h-48 shadow-2xl relative overflow-hidden group">
+          <div key={i} className="bg-bg-panel border border-border-panel rounded-[2rem] p-6 sm:p-8 flex flex-col justify-between h-40 sm:h-48 shadow-2xl relative overflow-hidden group">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-current opacity-5 blur-[40px] rounded-full group-hover:opacity-10 transition-opacity" />
-            <p className="text-[10px] font-black text-neutral-500 mb-2 uppercase tracking-[0.2em]">{stat.label}</p>
+            <p className="text-[10px] font-black text-text-secondary mb-2 uppercase tracking-[0.2em]">{stat.label}</p>
             <div className="flex items-end justify-between">
               <h3 className={`text-4xl sm:text-5xl font-black ${stat.color} tracking-tighter italic`}>{stat.value}</h3>
               {stat.sub ? (
@@ -58,15 +58,15 @@ export function StatsScreen() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-neutral-900 border border-neutral-800 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl">
+        <div className="lg:col-span-2 bg-bg-panel border border-border-panel rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-4">
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight italic">Activity</h3>
-              <p className="text-sm font-medium text-neutral-500">Last 7 days performance metrics</p>
+              <h3 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight italic">Activity</h3>
+              <p className="text-sm font-medium text-text-secondary">Last 7 days performance metrics</p>
             </div>
-            <div className="px-5 py-2 bg-neutral-800 rounded-full text-[10px] font-bold text-neutral-400 border border-neutral-700">WEEKLY VIEW</div>
+            <div className="px-5 py-2 bg-bg-page rounded-full text-[10px] font-bold text-text-secondary border border-border-panel">WEEKLY VIEW</div>
           </div>
-          <div className="h-48 sm:h-64 bg-neutral-950 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex items-end justify-between gap-2 sm:gap-6 border border-neutral-800 shadow-inner overflow-hidden">
+          <div className="h-48 sm:h-64 bg-bg-page rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex items-end justify-between gap-2 sm:gap-6 border border-border-panel shadow-inner overflow-hidden">
             {[60, 85, 45, 95, 30, 70, 55].map((h, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 sm:gap-4 h-full justify-end">
                 <div className="w-full bg-blue-600/10 rounded-lg sm:rounded-xl relative h-24 sm:h-32 overflow-hidden border border-white/5">
@@ -77,7 +77,7 @@ export function StatsScreen() {
                     className="absolute bottom-0 w-full bg-blue-600 rounded-t-lg sm:rounded-t-xl shadow-[0_0_20px_rgba(37,99,235,0.3)]"
                   />
                 </div>
-                <span className="text-[10px] sm:text-[10px] font-black text-neutral-600 italic">
+                <span className="text-[10px] sm:text-[10px] font-black text-text-secondary italic">
                   {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
                 </span>
               </div>
@@ -85,13 +85,13 @@ export function StatsScreen() {
           </div>
         </div>
 
-        <div className="bg-neutral-900 border border-neutral-800 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl flex flex-col">
-          <h3 className="text-xl sm:text-2xl font-black text-white italic mb-2">Level {userStats?.level || 1}</h3>
-          <p className="text-sm font-medium text-neutral-500 mb-6 sm:mb-10 tracking-tight">{userStats?.xp || 0} XP • Tier 1</p>
+        <div className="bg-bg-panel border border-border-panel rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl flex flex-col">
+          <h3 className="text-xl sm:text-2xl font-black text-text-primary italic mb-2">Level {userStats?.level || 1}</h3>
+          <p className="text-sm font-medium text-text-secondary mb-6 sm:mb-10 tracking-tight">{userStats?.xp || 0} XP • Tier 1</p>
           <div className="flex-1 flex flex-col justify-center items-center py-4">
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-8 p-1 bg-neutral-800 rounded-full border border-neutral-700">
+            <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-8 p-1 bg-bg-page rounded-full border border-border-panel">
               <svg className="w-full h-full -rotate-90">
-                <circle cx="50%" cy="50%" r="45%" fill="transparent" stroke="#0a0a0a" strokeWidth="8" />
+                <circle cx="50%" cy="50%" r="45%" fill="transparent" stroke="var(--color-bg-page)" strokeWidth="8" />
                 <circle 
                   cx="50%" cy="50%" r="45%" 
                   fill="transparent" 
@@ -107,7 +107,7 @@ export function StatsScreen() {
               </div>
             </div>
             <div className="text-center">
-              <p className="text-white font-black text-lg sm:text-xl italic mb-1">{userStats?.xp % 100 || 0}% Progress</p>
+              <p className="text-text-primary font-black text-lg sm:text-xl italic mb-1">{userStats?.xp % 100 || 0}% Progress</p>
               <p className="text-[9px] sm:text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black">{100 - (userStats?.xp % 100 || 0)} XP to Next Level</p>
             </div>
           </div>
