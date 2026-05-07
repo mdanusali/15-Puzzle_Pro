@@ -68,13 +68,13 @@ export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onToggle}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
           />
         )}
       </AnimatePresence>
 
       <aside className={`bg-neutral-950 h-screen w-80 fixed left-0 top-0 border-r-8 border-neutral-900 flex flex-col pt-12 z-[70] transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
+        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         <div className="px-8 mb-12 flex items-center justify-between">
           <div>
