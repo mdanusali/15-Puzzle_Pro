@@ -84,10 +84,10 @@ export function StatsScreen() {
   const maxActivity = Math.max(...activity, 1);
 
   return (
-    <div className="space-y-12 max-w-7xl mx-auto pb-24 w-full px-4 sm:px-0">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
+    <div className="space-y-8 lg:space-y-12 max-w-7xl mx-auto pb-24 w-full px-4 sm:px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-neutral-900 border border-white/5 rounded-[3rem] p-8 sm:p-10 flex flex-col justify-between h-48 lg:h-56 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:scale-[1.02] transition-transform">
+          <div key={i} className={`bg-neutral-900 border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-between h-44 lg:h-56 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:scale-[1.02] transition-transform ${i === 2 ? 'sm:col-span-2 lg:col-span-1' : ''}`}>
             <div className={`absolute -right-8 -top-8 w-32 h-32 ${stat.color.replace('text-', 'bg-')} opacity-5 blur-[60px] rounded-full group-hover:opacity-20 transition-opacity`} />
             <div className="space-y-1 relative z-10">
               <div className="w-8 h-1 bg-current opacity-20 rounded-full mb-4" />
@@ -105,16 +105,16 @@ export function StatsScreen() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 bg-neutral-900 border border-white/5 rounded-[4rem] p-8 sm:p-12 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 lg:mb-16 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="lg:col-span-2 bg-neutral-900 border border-white/5 rounded-[3rem] p-6 sm:p-12 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 lg:mb-16 gap-6">
             <div>
-              <h3 className="text-2xl lg:text-3xl font-black text-white tracking-tighter italic uppercase">Biometric Activity</h3>
-              <p className="text-[11px] font-black text-neutral-500 uppercase tracking-[0.2em] mt-2">Neural Synchronization over 168h period</p>
+              <h3 className="text-xl lg:text-3xl font-black text-white tracking-tighter italic uppercase">Biometric Activity</h3>
+              <p className="text-[10px] lg:text-[11px] font-black text-neutral-500 uppercase tracking-[0.2em] mt-2">Neural Synchronization over 168h period</p>
             </div>
-            <div className="px-6 py-2 bg-black rounded-full text-[10px] font-black text-neutral-500 border border-white/5 shadow-inner tracking-[0.2em]">REAL-TIME LOGGING</div>
+            <div className="px-6 py-2 bg-black rounded-full text-[9px] lg:text-[10px] font-black text-neutral-500 border border-white/5 shadow-inner tracking-[0.2em]">REAL-TIME LOGGING</div>
           </div>
-          <div className="h-64 lg:h-80 bg-black/40 rounded-[3rem] p-8 lg:p-12 flex items-end justify-between gap-4 lg:gap-10 border border-white/5 shadow-inner overflow-hidden relative">
+          <div className="h-56 lg:h-80 bg-black/40 rounded-[2.5rem] p-6 lg:p-12 flex items-end justify-between gap-2 lg:gap-10 border border-white/5 shadow-inner overflow-hidden relative">
             {/* Grid Lines */}
             <div className="absolute inset-0 flex flex-col justify-between py-12 px-8 pointer-events-none opacity-5">
               {[1,2,3,4].map(line => <div key={line} className="w-full h-px bg-white" />)}
@@ -296,14 +296,14 @@ export function LeaderboardScreen() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-10 lg:gap-16 items-end pt-12 lg:pt-24 relative">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-12 lg:gap-16 items-center lg:items-end pt-12 lg:pt-24 relative">
         {/* Glow behind podium */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-64 bg-blue-600/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="flex flex-row lg:flex-col items-center w-full gap-6 lg:gap-0 order-2 lg:order-none">
-          <div className="flex-1 lg:w-full flex flex-col items-center">
+        <div className="flex flex-col items-center w-full lg:w-auto order-2 lg:order-none">
+          <div className="w-full lg:w-full flex flex-col items-center">
             {topThree[1] && <PodiumAvatar user={topThree[1]} rank={2} medal="🥈" size="small" />}
-            <div className="bg-neutral-900 w-full h-16 lg:h-32 rounded-t-[3rem] border-x border-t border-white/5 flex items-center justify-center text-4xl lg:text-5xl shadow-2xl relative overflow-hidden group">
+            <div className="bg-neutral-900 w-full h-24 lg:h-32 rounded-t-[2.5rem] lg:rounded-t-[3rem] border-x border-t border-white/5 flex items-center justify-center text-4xl lg:text-5xl shadow-2xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent" />
               <div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-neutral-800" />
               <span className="opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500">🥈</span>
@@ -311,10 +311,10 @@ export function LeaderboardScreen() {
           </div>
         </div>
         
-        <div className="flex flex-row lg:flex-col items-center w-full gap-6 lg:gap-0 order-1 lg:order-none scale-105 lg:scale-110 relative z-10">
-          <div className="flex-1 lg:w-full flex flex-col items-center">
+        <div className="flex flex-col items-center w-full lg:w-auto order-1 lg:order-none scale-100 lg:scale-110 relative z-10">
+          <div className="w-full lg:w-full flex flex-col items-center">
             {topThree[0] && <PodiumAvatar user={topThree[0]} rank={1} medal="🏆" size="large" />}
-            <div className="bg-blue-600 w-full h-24 lg:h-56 rounded-t-[4rem] border-x-4 border-t-4 border-blue-400/30 flex items-center justify-center text-6xl lg:text-9xl relative overflow-hidden shadow-[0_-20px_60px_rgba(37,99,235,0.3)] group">
+            <div className="bg-blue-600 w-full h-32 lg:h-56 rounded-t-[3rem] lg:rounded-t-[4rem] border-x-4 border-t-4 border-blue-400/30 flex items-center justify-center text-6xl lg:text-9xl relative overflow-hidden shadow-[0_-20px_60px_rgba(37,99,235,0.3)] group">
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               <div className="absolute top-6 left-6 w-3 h-3 rounded-full bg-white/20" />
               <motion.div 
@@ -328,10 +328,10 @@ export function LeaderboardScreen() {
           </div>
         </div>
 
-        <div className="flex flex-row lg:flex-col items-center w-full gap-6 lg:gap-0 order-3 lg:order-none">
-          <div className="flex-1 lg:w-full flex flex-col items-center">
+        <div className="flex flex-col items-center w-full lg:w-auto order-3 lg:order-none">
+          <div className="w-full lg:w-full flex flex-col items-center">
             {topThree[2] && <PodiumAvatar user={topThree[2]} rank={3} medal="🥉" size="small" />}
-            <div className="bg-neutral-900 w-full h-12 lg:h-20 rounded-t-[2.5rem] border-x border-t border-white/5 flex items-center justify-center text-3xl lg:text-4xl shadow-xl relative overflow-hidden group">
+            <div className="bg-neutral-900 w-full h-16 lg:h-20 rounded-t-[2rem] lg:rounded-t-[2.5rem] border-x border-t border-white/5 flex items-center justify-center text-3xl lg:text-4xl shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent" />
               <div className="absolute bottom-4 right-4 w-2 h-2 rounded-full bg-neutral-800" />
               <span className="opacity-40 grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500">🥉</span>
@@ -406,7 +406,7 @@ function PodiumAvatar({ user, rank, medal, size }: { user: any, rank: number, me
         <img 
           src={user.photoURL} 
           alt={user.displayName} 
-          className={`${isLarge ? 'w-32 h-32 sm:w-56 sm:h-56 lg:w-72 lg:h-72' : 'w-24 h-24 sm:w-40 sm:h-40 lg:w-48 lg:h-48'} object-cover rounded-[2rem] lg:rounded-[3.2rem] relative z-10`} 
+          className={`${isLarge ? 'w-28 h-28 sm:w-56 sm:h-56 lg:w-72 lg:h-72' : 'w-20 h-20 sm:w-40 sm:h-40 lg:w-48 lg:h-48'} object-cover rounded-[2rem] lg:rounded-[3.2rem] relative z-10`} 
         />
         <div className={`absolute -top-3 -right-3 lg:-top-6 lg:-right-6 ${isLarge ? 'w-12 h-12 lg:w-20 lg:h-20 bg-blue-600' : 'w-10 h-10 lg:w-16 lg:h-16 bg-neutral-800'} text-white font-black rounded-full flex items-center justify-center border-4 lg:border-8 border-neutral-950 shadow-2xl italic text-xs lg:text-3xl z-20`}>
           {rank}

@@ -45,8 +45,8 @@ export function PuzzleBoard({ state, moveTile, shuffleGame, onTogglePause }: Puz
         {/* Extreme Outer Glow */}
         <div className="absolute -inset-40 bg-blue-600/5 blur-[120px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
         
-        <div className="relative z-10 bg-neutral-950 p-6 sm:p-12 lg:p-16 rounded-[4rem] lg:rounded-[6rem] border-[16px] sm:border-[32px] border-neutral-900 shadow-[0_80px_120px_-20px_rgba(0,0,0,0.9),inset_0_4px_40px_rgba(255,255,255,0.05)]">
-          <div className="grid grid-cols-4 gap-4 sm:gap-6 lg:gap-8 aspect-square w-[260px] sm:w-[520px] lg:w-[680px] relative">
+        <div className="relative z-10 bg-neutral-950 p-4 sm:p-8 lg:p-12 rounded-[3rem] lg:rounded-[5rem] border-[8px] sm:border-[24px] border-neutral-900 shadow-[0_80px_120px_-20px_rgba(0,0,0,0.9),inset_0_4px_40px_rgba(255,255,255,0.05)]">
+          <div className="grid grid-cols-4 gap-2 sm:gap-4 lg:gap-6 aspect-square w-[280px] sm:w-[480px] lg:w-[560px] max-w-full relative">
             {state.tiles.map((tile, idx) => (
               <motion.div
                 key={tile === null ? 'empty' : `tile-${tile}`}
@@ -141,52 +141,52 @@ export function ControlPanel({
     const sec = (s % 60).toString().padStart(2, '0');
     return `${min}:${sec}`;
   };
-
+ 
   return (
-    <div className="w-full xl:w-[480px] flex flex-col gap-8 lg:gap-12">
+    <div className="w-full xl:w-[400px] flex flex-col gap-8 lg:gap-10">
       {/* Stats Bento */}
-      <div className="grid grid-cols-2 gap-6 lg:gap-8">
-        <div className="bg-neutral-900 border border-white/5 rounded-[3rem] p-10 flex flex-col items-center justify-center relative overflow-hidden group shadow-2xl transition-transform hover:-translate-y-1">
+      <div className="grid grid-cols-2 gap-4 lg:gap-6">
+        <div className="bg-neutral-900 border border-white/5 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-center relative overflow-hidden group shadow-2xl transition-transform hover:-translate-y-1">
           <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="text-[12px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-4 relative z-10">Moves</div>
-          <div className="text-4xl lg:text-7xl font-black italic relative z-10 text-white">{moves}</div>
+          <div className="text-[10px] lg:text-[11px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-2 lg:mb-4 relative z-10">Moves</div>
+          <div className="text-3xl lg:text-5xl font-black italic relative z-10 text-white">{moves}</div>
         </div>
-        <div className="bg-neutral-900 border border-white/5 rounded-[3rem] p-10 flex flex-col items-center justify-center relative overflow-hidden group shadow-2xl transition-transform hover:-translate-y-1">
+        <div className="bg-neutral-900 border border-white/5 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-center relative overflow-hidden group shadow-2xl transition-transform hover:-translate-y-1">
           <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="text-[12px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-4 relative z-10">Timer</div>
-          <div className="text-4xl lg:text-7xl font-black text-emerald-500 italic relative z-10 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">{formatTime(seconds)}</div>
+          <div className="text-[10px] lg:text-[11px] font-black text-neutral-500 uppercase tracking-[0.3em] mb-2 lg:mb-4 relative z-10">Timer</div>
+          <div className="text-3xl lg:text-5xl font-black text-emerald-500 italic relative z-10 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">{formatTime(seconds)}</div>
         </div>
       </div>
 
       {/* Primary Actions */}
-      <div className="bg-neutral-900 border border-white/5 rounded-[3rem] p-8 lg:p-12 space-y-10 shadow-2xl">
-        <div className="flex gap-6">
+      <div className="bg-neutral-900 border border-white/5 rounded-[2.5rem] p-6 lg:p-10 space-y-8 shadow-2xl">
+        <div className="flex gap-4 sm:gap-6">
           <button 
             onClick={onShuffle}
-            className="flex-1 bg-blue-600 text-white hover:bg-blue-500 py-8 rounded-[2rem] font-black uppercase tracking-tighter text-lg lg:text-xl shadow-[0_12px_0_0_#1d4ed8] active:translate-y-2 active:shadow-none transition-all flex items-center justify-center gap-4"
+            className="flex-1 bg-blue-600 text-white hover:bg-blue-500 py-6 sm:py-8 rounded-[1.5rem] sm:rounded-[2rem] font-black uppercase tracking-tighter text-base sm:text-lg lg:text-xl shadow-[0_8px_0_0_#1d4ed8] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3 sm:gap-4"
           >
-            <Shuffle size={32} />
+            <Shuffle size={24} className="sm:w-8 sm:h-8" />
             {isStarted ? 'Reset Matrix' : 'Initialize'}
           </button>
           
           {isStarted && !isVictory && (
             <button 
               onClick={onTogglePause}
-              className={`w-24 lg:w-32 rounded-[2rem] flex items-center justify-center transition-all border-4 ${isPaused ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-black border-white/10 text-white hover:border-white/30'}`}
+              className={`w-20 sm:w-24 lg:w-28 rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center transition-all border-4 ${isPaused ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-black border-white/10 text-white hover:border-white/30'}`}
             >
-              {isPaused ? <Play size={40} className="fill-current" /> : <Pause size={40} className="fill-current" />}
+              {isPaused ? <Play size={32} className="fill-current" /> : <Pause size={32} className="fill-current" />}
             </button>
           )}
         </div>
 
-        <div className="space-y-6">
-          <label className="text-[11px] font-black text-neutral-500 uppercase tracking-[0.4em] block px-2">Operation Mode Selection</label>
+        <div className="space-y-4 lg:space-y-6">
+          <label className="text-[10px] lg:text-[11px] font-black text-neutral-500 uppercase tracking-[0.4em] block px-2">Operation Mode Selection</label>
           <div className="relative group">
              <div className="absolute inset-0 bg-blue-600/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             <select 
               value={currentMode}
               onChange={(e) => onModeChange(e.target.value as GameMode)}
-              className="w-full bg-black text-white border-2 border-white/10 rounded-[1.5rem] py-6 px-10 text-[14px] font-black uppercase tracking-widest focus:ring-4 focus:ring-blue-500 focus:border-transparent outline-none cursor-pointer hover:border-white/20 transition-all relative z-10 appearance-none text-center"
+              className="w-full bg-black text-white border-2 border-white/10 rounded-[1.25rem] py-4 sm:py-6 px-6 sm:px-10 text-[12px] sm:text-[14px] font-black uppercase tracking-widest focus:ring-4 focus:ring-blue-500 focus:border-transparent outline-none cursor-pointer hover:border-white/20 transition-all relative z-10 appearance-none text-center"
             >
               <option value="linear_asc">Standard Linear</option>
               <option value="linear_desc">Reverse Linear</option>

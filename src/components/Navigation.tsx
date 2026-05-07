@@ -158,14 +158,14 @@ export function Sidebar({ currentView, setView, isOpen, onToggle }: SidebarProps
   );
 }
 
-export function TopBar({ title, onToggleMenu }: { title: string, onToggleMenu: () => void }) {
+export function TopBar({ title, onToggleMenu, isSidebarOpen }: { title: string, onToggleMenu: () => void, isSidebarOpen: boolean }) {
   const { user } = useAuth();
   return (
-    <header className="bg-black fixed top-0 right-0 left-0 h-16 sm:h-20 flex justify-between items-center px-4 sm:px-12 z-50 border-b border-white/5 shadow-2xl">
+    <header className={`bg-black fixed top-0 right-0 left-0 lg:left-80 h-16 sm:h-20 flex justify-between items-center px-4 sm:px-12 z-50 border-b border-white/5 shadow-2xl transition-all duration-300`}>
       <div className="flex items-center gap-6">
         <button 
           onClick={onToggleMenu}
-          className="p-2 text-text-secondary hover:bg-white/5 rounded-xl transition-all active:scale-95"
+          className={`p-2 text-text-secondary hover:bg-white/5 rounded-xl transition-all active:scale-95 lg:hidden`}
         >
           <Menu size={24} />
         </button>

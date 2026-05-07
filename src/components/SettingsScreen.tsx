@@ -41,13 +41,13 @@ export function SettingsScreen() {
            <div className="w-2 h-8 bg-blue-600 rounded-full" />
            <h2 className="text-[12px] font-black text-neutral-500 uppercase tracking-[0.4em]">Core Identity Node</h2>
         </div>
-        <div className="bg-neutral-900 rounded-[3rem] lg:rounded-[4rem] p-8 lg:p-16 border-8 border-neutral-950 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
-          <div className="flex flex-col sm:flex-row items-center gap-8 lg:gap-12 mb-12">
-            <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-[2rem] lg:rounded-[3rem] bg-black p-1 flex items-center justify-center border-2 border-white/5 shadow-2xl overflow-hidden shrink-0">
+        <div className="bg-neutral-900 rounded-[2.5rem] lg:rounded-[4rem] p-6 lg:p-16 border-4 sm:border-8 border-neutral-950 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+          <div className="flex flex-col sm:flex-row items-center gap-6 lg:gap-12 mb-8 lg:mb-12">
+            <div className="w-20 h-20 lg:w-32 lg:h-32 rounded-[1.5rem] lg:rounded-[3rem] bg-black p-1 flex items-center justify-center border-2 border-white/5 shadow-2xl overflow-hidden shrink-0">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt="" className="w-full h-full object-cover rounded-[inherit]" />
               ) : (
-                <User className="text-blue-500" size={48} />
+                <User className="text-blue-500" size={32} />
               )}
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
@@ -56,24 +56,24 @@ export function SettingsScreen() {
                   <input 
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="bg-black border-2 border-blue-600/50 rounded-2xl px-6 py-4 text-white font-black italic tracking-tighter text-2xl lg:text-3xl w-full outline-none shadow-inner"
+                    className="bg-black border-2 border-blue-600/50 rounded-2xl px-4 py-3 text-white font-black italic tracking-tighter text-xl lg:text-3xl w-full outline-none shadow-inner"
                     autoFocus
                   />
                   <div className="flex gap-2">
-                    <button onClick={handleSaveName} className="p-3 bg-emerald-500 text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all">
-                      <Save size={24} />
+                    <button onClick={handleSaveName} className="p-2 sm:p-3 bg-emerald-500 text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+                      <Save size={20} className="sm:w-6 sm:h-6" />
                     </button>
-                    <button onClick={() => setIsEditingName(false)} className="p-3 bg-neutral-800 text-white rounded-xl hover:scale-105 active:scale-95 transition-all">
-                      <X size={24} />
+                    <button onClick={() => setIsEditingName(false)} className="p-2 sm:p-3 bg-neutral-800 text-white rounded-xl hover:scale-105 active:scale-95 transition-all">
+                      <X size={20} className="sm:w-6 sm:h-6" />
                     </button>
                   </div>
                 </div>
               ) : (
-                <p className="text-4xl lg:text-6xl font-black text-white italic tracking-tighter truncate flex items-center justify-center sm:justify-start gap-4 uppercase">
+                <p className="text-2xl sm:text-4xl lg:text-6xl font-black text-white italic tracking-tighter truncate flex items-center justify-center sm:justify-start gap-4 uppercase">
                   {userStats?.displayName || user?.displayName || 'GUEST_PROTO'}
                   {user && (
-                    <button onClick={() => setIsEditingName(true)} className="p-2 text-neutral-600 hover:text-blue-500 transition-colors">
-                      <Edit2 size={24} />
+                    <button onClick={() => setIsEditingName(true)} className="p-1 sm:p-2 text-neutral-600 hover:text-blue-500 transition-colors">
+                      <Edit2 size={18} className="sm:w-6 sm:h-6" />
                     </button>
                   )}
                 </p>

@@ -89,14 +89,14 @@ export function HistoryScreen({ onReplay }: HistoryScreenProps) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 pb-24 px-4 sm:px-0">
+    <div className="max-w-6xl mx-auto space-y-8 lg:space-y-12 pb-24 px-4 sm:px-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-4 h-12 bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
-            <h2 className="text-5xl lg:text-7xl font-black text-white tracking-tighter italic uppercase">Mission Logs</h2>
+            <div className="w-3 h-10 bg-emerald-500 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+            <h2 className="text-4xl lg:text-7xl font-black text-white tracking-tighter italic uppercase">Mission Logs</h2>
           </div>
-          <p className="text-neutral-500 font-black text-xs uppercase tracking-[0.4em] pl-8 opacity-60">Chronological Archive // Neural Pattern Database</p>
+          <p className="text-neutral-500 font-black text-[10px] sm:text-xs uppercase tracking-[0.4em] pl-6 opacity-60">Chronological Archive // Neural Pattern Database</p>
         </div>
       </div>
 
@@ -107,7 +107,7 @@ export function HistoryScreen({ onReplay }: HistoryScreenProps) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.05, ease: "circOut" }}
             key={game.id} 
-            className="bg-neutral-900 border border-white/5 p-8 lg:p-12 rounded-[3rem] lg:rounded-[4rem] flex flex-col lg:flex-row items-center justify-between gap-10 hover:bg-neutral-800 transition-all group relative overflow-hidden shadow-2xl"
+            className="bg-neutral-900 border border-white/5 p-6 sm:p-8 lg:p-12 rounded-[2.5rem] lg:rounded-[4rem] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-10 hover:bg-neutral-800 transition-all group relative overflow-hidden shadow-2xl"
           >
             <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/[0.02] transition-colors" />
             
