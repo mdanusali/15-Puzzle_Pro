@@ -54,7 +54,14 @@ export default function App() {
       case 'leaderboard':
         return <LeaderboardScreen />;
       case 'history':
-        return <HistoryScreen />;
+        return (
+          <HistoryScreen 
+            onReplay={(mode) => {
+              initGame(mode);
+              setCurrentView('play');
+            }} 
+          />
+        );
       case 'settings':
         return <SettingsScreen />;
       default:
@@ -100,13 +107,13 @@ export default function App() {
       />
       <TopBar title={getTitle()} onToggleMenu={toggleSidebar} />
       
-      <main className="lg:ml-64 pt-20 lg:pt-24 px-4 sm:px-8 lg:px-16 pb-24 transition-all duration-300 min-h-screen flex flex-col items-center">
-        <div className="w-full max-w-6xl">
+      <main className="pt-24 lg:pt-32 px-4 sm:px-8 lg:px-16 pb-24 transition-all duration-300 min-h-screen flex flex-col items-center justify-center">
+        <div className="w-full max-w-[1400px]">
           {renderContent()}
         </div>
       </main>
 
-      <footer className="fixed bottom-0 lg:left-64 left-0 right-0 h-14 lg:h-12 bg-bg-panel border-t border-border-panel flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 lg:px-12 text-[10px] font-bold text-text-secondary uppercase tracking-widest z-30 shrink-0 gap-2 lg:gap-0">
+      <footer className="fixed bottom-0 left-0 right-0 h-14 lg:h-12 bg-black/80 backdrop-blur-md border-t border-white/5 flex flex-col lg:flex-row items-center justify-center lg:justify-between px-4 lg:px-12 text-[10px] font-black text-text-secondary uppercase tracking-[0.3em] z-30 shrink-0 gap-2 lg:gap-0">
         <div className="flex gap-4 items-center">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>System Online: Node-FR2GM</span>

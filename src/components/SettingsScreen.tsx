@@ -35,63 +35,74 @@ export function SettingsScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 sm:space-y-12 pb-12 w-full px-2 sm:px-0">
+    <div className="max-w-4xl mx-auto space-y-12 lg:space-y-20 pb-48 w-full px-4 sm:px-0">
       <section>
-        <h2 className="text-[10px] sm:text-[10px] font-black text-neutral-500 uppercase tracking-[0.2em] mb-4">Core Identity</h2>
-        <div className="bg-neutral-900 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 border border-neutral-800 shadow-2xl">
-          <div className="flex items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-800 flex items-center justify-center border border-neutral-700 shadow-lg overflow-hidden shrink-0">
+        <div className="flex items-center gap-4 mb-8">
+           <div className="w-2 h-8 bg-blue-600 rounded-full" />
+           <h2 className="text-[12px] font-black text-neutral-500 uppercase tracking-[0.4em]">Core Identity Node</h2>
+        </div>
+        <div className="bg-neutral-900 rounded-[3rem] lg:rounded-[4rem] p-8 lg:p-16 border-8 border-neutral-950 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+          <div className="flex flex-col sm:flex-row items-center gap-8 lg:gap-12 mb-12">
+            <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-[2rem] lg:rounded-[3rem] bg-black p-1 flex items-center justify-center border-2 border-white/5 shadow-2xl overflow-hidden shrink-0">
               {user?.photoURL ? (
-                <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+                <img src={user.photoURL} alt="" className="w-full h-full object-cover rounded-[inherit]" />
               ) : (
-                <User className="text-blue-500" size={24} />
+                <User className="text-blue-500" size={48} />
               )}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 text-center sm:text-left min-w-0">
               {isEditingName ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   <input 
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    className="bg-neutral-800 border border-blue-500/50 rounded-lg px-2 py-1 text-white font-black italic tracking-tighter w-full outline-none"
+                    className="bg-black border-2 border-blue-600/50 rounded-2xl px-6 py-4 text-white font-black italic tracking-tighter text-2xl lg:text-3xl w-full outline-none shadow-inner"
                     autoFocus
                   />
-                  <button onClick={handleSaveName} className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded-md">
-                    <Save size={16} />
-                  </button>
-                  <button onClick={() => setIsEditingName(false)} className="p-1 text-red-500 hover:bg-red-500/10 rounded-md">
-                    <X size={16} />
-                  </button>
+                  <div className="flex gap-2">
+                    <button onClick={handleSaveName} className="p-3 bg-emerald-500 text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+                      <Save size={24} />
+                    </button>
+                    <button onClick={() => setIsEditingName(false)} className="p-3 bg-neutral-800 text-white rounded-xl hover:scale-105 active:scale-95 transition-all">
+                      <X size={24} />
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <p className="text-xl sm:text-2xl font-black text-white italic tracking-tighter truncate flex items-center gap-2">
-                  {userStats?.displayName || user?.displayName || 'Anonymous Agent'}
+                <p className="text-4xl lg:text-6xl font-black text-white italic tracking-tighter truncate flex items-center justify-center sm:justify-start gap-4 uppercase">
+                  {userStats?.displayName || user?.displayName || 'GUEST_PROTO'}
                   {user && (
-                    <button onClick={() => setIsEditingName(true)} className="p-1 text-neutral-500 hover:text-blue-500 transition-colors">
-                      <Edit2 size={14} />
+                    <button onClick={() => setIsEditingName(true)} className="p-2 text-neutral-600 hover:text-blue-500 transition-colors">
+                      <Edit2 size={24} />
                     </button>
                   )}
                 </p>
               )}
-              <p className="text-[10px] sm:text-sm font-bold text-blue-500 uppercase tracking-widest">
-                {user ? `Level ${userStats?.level || 1} • XP ${userStats?.xp || 0}` : 'GUEST SESSION'}
+              <p className="text-[11px] lg:text-[13px] font-black text-blue-500 uppercase tracking-[0.5em] mt-3 drop-shadow-[0_0_10px_rgba(37,99,235,0.5)]">
+                {user ? `NEURAL LEVEL ${userStats?.level || 1} • SYNC XP ${userStats?.xp || 0}` : 'GUEST // NO DATA SYNC'}
               </p>
             </div>
           </div>
-          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-6 lg:gap-10">
             <button 
               onClick={() => setIsEditingName(!isEditingName)}
-              className="bg-neutral-800 text-white border border-neutral-700 rounded-xl py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-widest active:translate-y-0.5 transition-all text-center"
+              className="bg-neutral-800 text-white border-4 border-neutral-950 rounded-[2rem] py-6 px-10 text-[11px] lg:text-[13px] font-black uppercase tracking-[0.4em] hover:bg-neutral-700 active:translate-y-2 transition-all text-center shadow-xl"
             >
               Modify Protocol
             </button>
             {user && (
               <button 
                 onClick={logout}
-                className="bg-neutral-800 text-red-500 border border-neutral-700 rounded-xl py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-widest active:translate-y-0.5 transition-all"
+                className="bg-red-600/5 text-red-500 border-4 border-neutral-950 rounded-[2rem] py-6 px-10 text-[11px] lg:text-[13px] font-black uppercase tracking-[0.4em] hover:bg-red-500 hover:text-white active:translate-y-2 transition-all shadow-xl"
               >
                 Terminate Session
               </button>
+            )}
+            {!user && (
+              <div className="col-span-2 p-8 bg-blue-600/5 border-4 border-dashed border-blue-500/20 rounded-[2rem] text-center">
+                 <p className="text-blue-500/60 font-black uppercase tracking-[0.3em] text-[10px] mb-4">Neural synchronization is currently disabled</p>
+                 <p className="text-neutral-500 text-xs">Access settings are restricted in guest mode. Login to claim your node.</p>
+              </div>
             )}
           </div>
         </div>
@@ -160,6 +171,36 @@ export function SettingsScreen() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-[10px] font-black text-neutral-500 uppercase tracking-[0.2em] mb-4">Neural Data Management</h2>
+        <div className="bg-neutral-900 rounded-[2rem] p-8 border border-neutral-800 shadow-2xl space-y-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button 
+              onClick={() => {
+                const data = { user, userStats, settings };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `neural_profile_${user?.uid || 'guest'}.json`;
+                a.click();
+              }}
+              className="flex-1 bg-black text-white hover:bg-neutral-800 border border-white/5 py-4 px-6 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all active:scale-95"
+            >
+              <Save size={18} className="text-blue-500" />
+              Download Local Backup
+            </button>
+            <button 
+              onClick={() => alert("CLOUD SYNC INITIATED. NEURAL PATTERNS UPLOADED.")}
+              className="flex-1 bg-blue-600 text-white hover:bg-blue-500 py-4 px-6 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-all active:scale-95 shadow-[0_4px_0_0_#1e40af]"
+            >
+              <History size={18} />
+              Manual Hyper-Sync
+            </button>
           </div>
         </div>
       </section>
